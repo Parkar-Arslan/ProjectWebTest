@@ -1,49 +1,144 @@
 #!/bin/bash
 
-# Create main directories
-mkdir -p Nextap-PWA/{app/{public,src/{assets/{images,styles},components/{Auth,Dashboard,QRCode,Wallet},contexts,hooks,i18n,pages,redux/{slices},services,utils},tests},service/{controllers,domain/{entities,services,repositories},routes,middlewares,config,utils,tests}}
+# Define project name
+PROJECT_NAME="nextap-app"
+
+# Create project directory
+mkdir $PROJECT_NAME
+cd $PROJECT_NAME
+
+# Initialize Git repository
+git init
+
+# Create frontend (React) and backend (Node.js) directories
+mkdir -p app/public
+mkdir -p app/src/assets
+mkdir -p app/src/components
+mkdir -p app/src/pages
+mkdir -p app/src/services
+mkdir -p app/src/contexts
+mkdir -p app/src/utils
+mkdir -p app/src/styles
+mkdir -p backend/config
+mkdir -p backend/controllers
+mkdir -p backend/models
+mkdir -p backend/routes
+mkdir -p backend/services
+mkdir -p backend/utils
 
 # Create frontend files
-touch Nextap-PWA/app/.babelrc \
-      Nextap-PWA/app/webpack.config.js \
-      Nextap-PWA/app/.env \
-      Nextap-PWA/app/package.json \
-      Nextap-PWA/app/public/{index.html,manifest.json,service-worker.js,favicon.ico} \
-      Nextap-PWA/app/src/{App.js,index.js,routes.js,PWA.js} \
-      Nextap-PWA/app/src/assets/styles/{main.scss,variables.scss} \
-      Nextap-PWA/app/src/components/Auth/{Login.js,Signup.js,NFCLogin.js} \
-      Nextap-PWA/app/src/components/Dashboard/{UserProfile.js,TransactionHistory.js,SendMoney.js} \
-      Nextap-PWA/app/src/components/QRCode/{QRCodeGenerator.js,QRCodeScanner.js} \
-      Nextap-PWA/app/src/components/Wallet/{WalletCreation.js,WalletBalance.js} \
-      Nextap-PWA/app/src/contexts/AuthContext.js \
-      Nextap-PWA/app/src/hooks/useAuth.js \
-      Nextap-PWA/app/src/i18n/{en.json,es.json,i18n.js} \
-      Nextap-PWA/app/src/pages/{HomePage.js,DashboardPage.js,AdminPage.js,NotFound.js} \
-      Nextap-PWA/app/src/redux/{store.js,slices/{authSlice.js,userSlice.js,walletSlice.js}} \
-      Nextap-PWA/app/src/services/{api.js,nfcService.js,qrCodeService.js} \
-      Nextap-PWA/app/src/utils/{apiHelpers.js,qrCodeUtils.js,blockchainUtils.js}
+touch app/public/index.html
+touch app/src/App.js
+touch app/src/index.js
+touch app/src/styles/tailwind.config.js
+touch app/src/styles/global.css
+touch app/.env
+touch app/package.json
 
 # Create backend files
-touch Nextap-PWA/service/{server.js,app.js,.env,package.json} \
-      Nextap-PWA/service/controllers/{authController.js,paymentController.js,userController.js,adminController.js} \
-      Nextap-PWA/service/domain/entities/{User.js,Wallet.js,Transaction.js} \
-      Nextap-PWA/service/domain/services/{WalletService.js,PaymentService.js,AuthService.js} \
-      Nextap-PWA/service/domain/repositories/{userRepository.js,walletRepository.js,transactionRepository.js} \
-      Nextap-PWA/service/routes/{authRoutes.js,paymentRoutes.js,userRoutes.js,adminRoutes.js} \
-      Nextap-PWA/service/middlewares/{authMiddleware.js,errorHandler.js} \
-      Nextap-PWA/service/config/{dbConfig.js,blockchainConfig.js,env.js} \
-      Nextap-PWA/service/utils/{logger.js,validator.js,apiHelpers.js} \
-      Nextap-PWA/service/tests/{authTests.js,paymentTests.js,userTests.js,walletTests.js}
+touch backend/config/db.js
+touch backend/controllers/userController.js
+touch backend/controllers/transactionController.js
+touch backend/models/userModel.js
+touch backend/models/transactionModel.js
+touch backend/routes/userRoutes.js
+touch backend/routes/transactionRoutes.js
+touch backend/services/cryptoService.js
+touch backend/services/nfcService.js
+touch backend/utils/jwtUtil.js
+touch backend/utils/passwordUtil.js
+touch backend/server.js
+touch backend/.env
+touch backend/package.json
 
-# Create additional project files
-mkdir -p Nextap-PWA/{docs,scripts}
-touch Nextap-PWA/docs/{README.md,API_Documentation.md,system_architecture.md,class_diagram.png} \
-      Nextap-PWA/scripts/{start.sh,build.sh,deploy.sh} \
-      Nextap-PWA/.gitignore \
-      Nextap-PWA/README.md \
-      Nextap-PWA/LICENSE
+# Initialize frontend (React app)
+cat <<EOL > app/package.json
+{
+  "name": "$PROJECT_NAME",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "axios": "^1.0.0",
+    "tailwindcss": "^3.0.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0"
+  },
+  "devDependencies": {
+    "react-scripts": "^5.0.0"
+  }
+}
+EOL
 
-# Make shell scripts executable
-chmod +x Nextap-PWA/scripts/*.sh
+# Initialize backend (Node.js app)
+cat <<EOL > backend/package.json
+{
+  "name": "$PROJECT_NAME-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "bcryptjs": "^2.4.3",
+    "axios": "^1.0.0"
+  }
+}
+EOL
 
-echo "Project structure created successfully!"
+# Create Tailwind CSS configuration for frontend
+cat <<EOL > app/src/styles/tailwind.config.js
+module.exports = {
+  content: [
+    "./src/**/*.{html,js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+EOL
+
+# Create global CSS file for frontend
+cat <<EOL > app/src/styles/global.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+EOL
+
+# Create .env files for both frontend and backend
+cat <<EOL > app/.env
+REACT_APP_MONGO_URI=<your-mongodb-uri>
+REACT_APP_COIN_GECKO_API_KEY=<your-coin-gecko-api-key>
+EOL
+
+cat <<EOL > backend/.env
+MONGO_URI=<your-mongodb-uri>
+JWT_SECRET=<your-jwt-secret>
+EOL
+
+# Install frontend dependencies
+cd app
+npm install
+
+# Install backend dependencies
+cd ../backend
+npm install
+
+# Instructions to user
+echo "Project setup complete!"
+echo "1. Replace <your-mongodb-uri> with your MongoDB connection string in .env"
+echo "2. Replace <your-coin-gecko-api-key> with your CoinGecko API key in frontend .env"
+echo "3. Replace <your-jwt-secret> with a secret key for JWT in backend .env"
+echo "4. Run 'npm start' in the frontend ('app' folder) and backend ('backend' folder) to start the development servers."
