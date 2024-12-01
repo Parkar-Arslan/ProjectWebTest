@@ -46,20 +46,33 @@ const NavBar: React.FC<NavBarProps> = ({ title, loginLabel, onLoginClick }) => {
         </IconButton>
 
         {/* Dropdown Menu */}
-        <Menu
-          id="nav-menu"
-          anchorEl={menuAnchor}
-          keepMounted
-          open={Boolean(menuAnchor)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleMenuClose}>
-            <Link to="/" className="nav-link">Home</Link>
-          </MenuItem>
-          <MenuItem onClick={handleMenuClose}>
-            <Link to="/profile" className="nav-link">Profile</Link>
-          </MenuItem>
-        </Menu>
+        {/* Dropdown Menu */}
+<Menu
+  id="nav-menu"
+  anchorEl={menuAnchor}
+  keepMounted
+  open={Boolean(menuAnchor)}
+  onClose={handleMenuClose}
+>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/" className="nav-link">Home</Link>
+  </MenuItem>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/profile" className="nav-link">Profile</Link>
+  </MenuItem>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/send-receive" className="nav-link">Send & Receive</Link>
+  </MenuItem>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/statements" className="nav-link">Statements</Link>
+  </MenuItem>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/balance" className="nav-link">Balance</Link>
+  </MenuItem>
+  <MenuItem onClick={handleMenuClose}>
+    <Link to="/add-card" className="nav-link">Add Card</Link>
+  </MenuItem>
+</Menu>
 
         {/* Login/Logout Button */}
         <Button color="secondary" variant="contained" className="login-button" onClick={onLoginClick}>

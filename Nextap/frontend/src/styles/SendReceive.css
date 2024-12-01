@@ -1,0 +1,30 @@
+.send-receive-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #121212;
+    padding: 16px;
+  }
+  
+  .send-receive-content {
+    margin-top: 32px;
+  }
+  
+  .input-field {
+    margin-bottom: 16px;
+  }
+  
+  .action-buttons {
+    text-align: center;
+  }
+  
+  .send-button {
+    margin-right: 8px;
+    background-color: #4caf50;
+    text-transform: none;
+  }
+  
+  .receive-button {
+    color: #9c27b0;
+    border-color: #9c27b0;
+    text-transform: none;
+  }
