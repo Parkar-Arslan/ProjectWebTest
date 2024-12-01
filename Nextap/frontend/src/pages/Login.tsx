@@ -6,9 +6,26 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    console.log("Logging in with", email, password);
-    // Here you would send the login data to your backend API
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Login successful", data);
+        localStorage.setItem("token", data.token); // Store token in localStorage
+        window.location.href = "/profile"; // Redirect to Profile
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred during login.");
+    }
   };
 
   return (
@@ -41,7 +58,12 @@ const Login: React.FC = () => {
           />
         </Grid>
         <Grid item xs={12} className="login-actions">
-          <Button variant="contained" color="primary" onClick={handleLogin} className="login-button">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleLogin}
+            className="login-button"
+          >
             Login
           </Button>
         </Grid>

@@ -1,95 +1,40 @@
-import React from "react";
-import NavBar from "../components/NavBar";
-import { Grid, TextField, Avatar, Button, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import "../styles/Profile.css";
 
 const Profile: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return (window.location.href = "/login");
+
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await response.json();
+        if (response.ok) setUser(data);
+        else window.location.href = "/login";
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        window.location.href = "/login";
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (!user) return <div>Loading...</div>;
+
   return (
     <div className="profile-container">
-      <NavBar title="Profile" loginLabel="Logout" />
-
-      <Grid container spacing={3} className="profile-content">
-        {/* Profile Photo Section */}
-        <Grid item xs={12} className="profile-photo-section">
-          <Avatar className="profile-photo" />
-          <Typography variant="h5" className="profile-name">
-            John Doe
-          </Typography>
-        </Grid>
-
-        {/* Profile Fields */}
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Profile ID"
-            variant="outlined"
-            fullWidth
-            disabled
-            defaultValue="123456"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            defaultValue="John Doe"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            defaultValue="johndoe@example.com"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Phone No"
-            variant="outlined"
-            fullWidth
-            defaultValue="+123456789"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Card No"
-            variant="outlined"
-            fullWidth
-            defaultValue="1234 5678 9012"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} className="profile-item">
-          <TextField
-            label="Acc No"
-            variant="outlined"
-            fullWidth
-            defaultValue="000123456789"
-            InputLabelProps={{ className: "text-label" }}
-            InputProps={{ className: "text-input" }}
-          />
-        </Grid>
-
-        {/* Save/Update Buttons */}
-        <Grid item xs={12} className="profile-actions">
-          <Button variant="contained" color="primary" className="save-button">
-            Save
-          </Button>
-          <Button variant="outlined" color="secondary" className="update-button">
-            Update
-          </Button>
-        </Grid>
-      </Grid>
+      <h1>{user.name}'s Profile</h1>
+      <p>Email: {user.email}</p>
+      <p>Phone: {user.phone}</p>
+      <p>Card No: {user.cardNo}</p>
+      <p>Acc No: {user.accNo}</p>
     </div>
   );
 };
