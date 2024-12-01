@@ -1,0 +1,27 @@
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #121212;
+  padding: 16px;
+}
+
+.home-content {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.welcome-header {
+  color: #4caf50;
+  margin-bottom: 16px;
+}
+
+.welcome-description {
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+
+.get-started-button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  text-transform: none;
+}
