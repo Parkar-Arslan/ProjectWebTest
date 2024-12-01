@@ -1,11 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
+const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Login Route
+// Register User
+router.post("/register", async (req, res) => {
+  const { email, password, name, phone, cardNo, accNo } = req.body;
+
+  try {
+    const user = new User({ email, password, name, phone, cardNo, accNo });
+    await user.save();
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error registering user", error: err.message });
+  }
+});
+
+// Login User
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -23,16 +36,19 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Register Route (Optional for creating users)
-router.post("/register", async (req, res) => {
-  const { email, password, name, phone, cardNo, accNo } = req.body;
+// Get Profile
+router.get("/profile", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "No token provided" });
 
   try {
-    const user = new User({ email, password, name, phone, cardNo, accNo });
-    await user.save();
-    res.status(201).json({ message: "User registered successfully" });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
   } catch (err) {
-    res.status(500).json({ message: "Error registering user", error: err.message });
+    res.status(401).json({ message: "Invalid token" });
   }
 });
 
