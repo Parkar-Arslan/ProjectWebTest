@@ -8,8 +8,8 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setUser }) => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -22,19 +22,20 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Login failed:", errorData);
-        alert(errorData.message || "Login failed. Please try again.");
+        console.error("Login failed:", data);
+        alert(data.message || "Login failed. Please try again.");
         return;
       }
 
-      const data = await response.json();
+      console.log("Login successful:", data);
       localStorage.setItem("token", data.token);
       setUser(data.user);
       navigate("/");
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Network error during login:", error);
       alert("An error occurred during login. Please check your connection and try again.");
     }
   };
