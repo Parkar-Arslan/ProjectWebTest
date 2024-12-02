@@ -62,5 +62,12 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+  const cors = require("cors");
+
+  app.use(cors({
+    origin: "https://frontend-phi-topaz-44.vercel.app", // Allow your frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }));
+
 // Export the app for Vercel
 module.exports = app;

@@ -13,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3200"; // Fallback to localhost for development
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3200";
 
     try {
       const response = await fetch(`${apiUrl}/api/auth/login`, {
@@ -22,15 +22,17 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        setUser(data.user); // Set the user state
-        navigate("/"); // Redirect to the homepage
-      } else {
-        alert(data.message || "Login failed. Please try again.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Login failed:", errorData);
+        alert(errorData.message || "Login failed. Please try again.");
+        return;
       }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
       alert("An error occurred during login. Please check your connection and try again.");
