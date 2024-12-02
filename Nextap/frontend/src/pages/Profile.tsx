@@ -33,7 +33,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/profile`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || "https://backend-sand-xi.vercel.app"}/api/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
