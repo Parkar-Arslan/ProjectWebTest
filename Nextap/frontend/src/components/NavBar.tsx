@@ -4,20 +4,22 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import "../styles/NavBar.css";
 
+interface User {
+  name: string;
+}
+
 interface NavBarProps {
-  user: any;
+  user?: User;
   onLogout: () => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-  // Open the menu
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
   };
 
-  // Close the menu
   const handleMenuClose = () => {
     setMenuAnchor(null);
   };
@@ -83,7 +85,13 @@ const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
 
           {/* Logout Button */}
           {user && (
-            <Button color="secondary" variant="contained" className="logout-button" onClick={onLogout}>
+            <Button
+              color="secondary"
+              variant="contained"
+              className="logout-button"
+              onClick={onLogout}
+              style={{ marginLeft: "16px" }}
+            >
               Logout
             </Button>
           )}
