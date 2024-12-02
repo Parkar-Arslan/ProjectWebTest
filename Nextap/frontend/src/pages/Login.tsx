@@ -8,35 +8,38 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setUser }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState(""); // Email input state
+  const [password, setPassword] = useState(""); // Password input state
+  const navigate = useNavigate(); // Navigation hook
 
   const handleLogin = async () => {
-    const apiUrl = process.env.REACT_APP_API_URL; // Now only uses the deployed backend
-    
     try {
+      const apiUrl = process.env.REACT_APP_API_URL || "https://backend-sand-xi.vercel.app";
+      console.log("API URL:", apiUrl); // Debug: Ensure API URL is correct
+
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("Response status:", response.status); // Debug: Log response status
+
       const data = await response.json();
 
-      if (!response.ok) {
-        console.error("Login failed:", data);
-        alert(data.message || "Login failed. Please try again.");
-        return;
+      if (response.ok) {
+        console.log("Login successful:", data); // Debug: Log success response
+        localStorage.setItem("token", data.token); // Store token in localStorage
+        setUser(data.user); // Update user state
+        alert("Login successful!"); // Notify the user
+        navigate("/"); // Redirect to the home page
+      } else {
+        console.error("Login failed:", data); // Debug: Log error response
+        alert(data.message || "Login failed. Please check your credentials."); // Notify the user of an error
       }
-
-      console.log("Login successful:", data);
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      navigate("/");
     } catch (error) {
-      console.error("Network error during login:", error);
-      alert("An error occurred during login. Please check your connection and try again.");
+      console.error("Network error during login:", error); // Debug: Log network error
+      alert("A network error occurred. Please check your connection and try again."); // Notify the user of a network error
     }
   };
 
