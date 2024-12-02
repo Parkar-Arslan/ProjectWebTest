@@ -8,29 +8,32 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setUser }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3200"; // Fallback to localhost for development
+
     try {
-      const response = await fetch("http://localhost:3200/api/auth/login", {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
+
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        setUser(data.user); // Update the global user state
-        navigate("/");
+        setUser(data.user); // Set the user state
+        navigate("/"); // Redirect to the homepage
       } else {
         alert(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("An error occurred during login.");
+      alert("An error occurred during login. Please check your connection and try again.");
     }
   };
 
