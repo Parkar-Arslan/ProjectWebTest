@@ -9,8 +9,12 @@ import AddCard from "./pages/AddCard";
 import Login from "./pages/Login";
 import NavBar from "./components/NavBar";
 
+interface User {
+  name: string;
+}
+
 const App: React.FC = () => {
-  const [user, setUser] = useState<any>(null); // User state
+  const [user, setUser] = useState<User | null>(null); // Specify `user` type
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -31,7 +35,7 @@ const App: React.FC = () => {
         />
         <Route
           path="/profile"
-          element={user ? <Profile onLogout={handleLogout} user={user} /> : <Navigate to="/login" />}
+          element={user ? <Profile /> : <Navigate to="/login" />}
         />
         <Route
           path="/send-receive"
