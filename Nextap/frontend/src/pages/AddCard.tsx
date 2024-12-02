@@ -9,9 +9,8 @@ const AddCard: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleNfcRead = async () => {
-    // NFC reading logic (as shown earlier)
-    try {
-      if ("NDEFReader" in window) {
+    if ("NDEFReader" in window) {
+      try {
         const nfcReader = new (window as any).NDEFReader();
         await nfcReader.scan();
         nfcReader.onreading = (event: any) => {
@@ -23,17 +22,22 @@ const AddCard: React.FC = () => {
             setSuccess("NFC Card detected successfully!");
             setError(null);
           } else {
-            setError("Invalid NFC data");
+            setError("Unsupported NFC card format.");
             setSuccess(null);
           }
         };
-      } else {
-        setError("NFC not supported on this browser.");
+        nfcReader.onerror = (err: any) => {
+          console.error("NFC reading error:", err);
+          setError("NFC read failed. Please try again.");
+          setSuccess(null);
+        };
+      } catch (err) {
+        console.error("Error starting NFC scan:", err);
+        setError("Error starting NFC scan. Please try again.");
         setSuccess(null);
       }
-    } catch (err) {
-      console.error("Error reading NFC card:", err);
-      setError("Error reading NFC card. Please try again.");
+    } else {
+      setError("Web NFC is not supported on this device or browser.");
       setSuccess(null);
     }
   };
