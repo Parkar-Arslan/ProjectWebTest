@@ -47,7 +47,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Profile Route
+// Profile Route (Get Profile)
 router.get("/profile", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -65,6 +65,34 @@ router.get("/profile", async (req, res) => {
   } catch (err) {
     console.error("Error fetching profile:", err);
     res.status(401).json({ message: "Invalid token" });
+  }
+});
+
+// Update Profile Route
+router.put("/profile", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { name, email, phone, cardNo, accNo } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      decoded.id,
+      { name, email, phone, cardNo, accNo },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser);
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 

@@ -15,13 +15,54 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
-  const [profileData] = useState(user);
+  const [profileData, setProfileData] = useState(user); // Editable profile data
+  const [isEditing, setIsEditing] = useState(false); // Edit mode toggle
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
+  };
+
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You are not authorized!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data); // Update user state
+        setIsEditing(false); // Exit edit mode
+        alert("Profile updated successfully!");
+      } else {
+        console.error("Error updating profile:", data);
+        alert(data.message || "Failed to update profile.");
+      }
+    } catch (error) {
+      console.error("Network error while updating profile:", error);
+      alert("A network error occurred. Please try again.");
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfileData({
+      ...profileData,
+      [e.target.name]: e.target.value, // Update the corresponding field
+    });
   };
 
   return (
@@ -34,45 +75,94 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            name="name"
+            label="Name"
+            variant="outlined"
+            fullWidth
+            value={profileData.name}
+            onChange={handleChange}
+            InputProps={{ readOnly: !isEditing }}
+            className="input-field"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="email"
             label="Email"
             variant="outlined"
             fullWidth
             value={profileData.email}
-            InputProps={{ readOnly: true }}
+            onChange={handleChange}
+            InputProps={{ readOnly: !isEditing }}
             className="input-field"
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
+            name="phone"
             label="Phone"
             variant="outlined"
             fullWidth
             value={profileData.phone}
-            InputProps={{ readOnly: true }}
+            onChange={handleChange}
+            InputProps={{ readOnly: !isEditing }}
             className="input-field"
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
+            name="cardNo"
             label="Card No"
             variant="outlined"
             fullWidth
             value={profileData.cardNo}
-            InputProps={{ readOnly: true }}
+            onChange={handleChange}
+            InputProps={{ readOnly: !isEditing }}
             className="input-field"
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
+            name="accNo"
             label="Account No"
             variant="outlined"
             fullWidth
             value={profileData.accNo}
-            InputProps={{ readOnly: true }}
+            onChange={handleChange}
+            InputProps={{ readOnly: !isEditing }}
             className="input-field"
           />
         </Grid>
-        <Grid item xs={12} className="logout-actions">
+        <Grid item xs={12} className="profile-actions">
+          {isEditing ? (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
+                className="save-button"
+              >
+                Save
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => setIsEditing(false)}
+                className="cancel-button"
+              >
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setIsEditing(true)}
+              className="edit-button"
+            >
+              Edit Profile
+            </Button>
+          )}
           <Button
             variant="contained"
             color="secondary"
