@@ -8,23 +8,28 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      // Make the API call to login
+      const response = await fetch("http://localhost:3200/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        console.log("Login successful", data);
-        localStorage.setItem("token", data.token); // Store token in localStorage
-        window.location.href = "/profile"; // Redirect to Profile
+        // Login successful
+        console.log("Login successful:", data);
+        localStorage.setItem("token", data.token); // Store JWT token
+        alert("Login successful! Redirecting to profile...");
+        window.location.href = "/profile"; // Redirect to Profile page
       } else {
-        alert(data.message);
+        // Display error message
+        alert(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      alert("An error occurred during login.");
+      console.error("Error during login:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
   };
 
