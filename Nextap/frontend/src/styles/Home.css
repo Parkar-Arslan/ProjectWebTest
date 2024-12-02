@@ -11,12 +11,12 @@
 }
 
 .welcome-header {
-  color: #4caf50;
+  color: #4caf50; /* Bright green for welcome header */
   margin-bottom: 16px;
 }
 
 .welcome-description {
-  color: #ffffff;
+  color: #ffffff; /* White description text */
   margin-bottom: 24px;
 }
 

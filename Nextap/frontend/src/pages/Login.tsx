@@ -1,14 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Grid, TextField, Button, Typography } from "@mui/material";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // React Router's navigation hook
 
   const handleLogin = async () => {
     try {
-      // Make the API call to login
       const response = await fetch("http://localhost:3200/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -16,20 +17,15 @@ const Login: React.FC = () => {
       });
 
       const data = await response.json();
-
       if (response.ok) {
-        // Login successful
-        console.log("Login successful:", data);
-        localStorage.setItem("token", data.token); // Store JWT token
-        alert("Login successful! Redirecting to profile...");
-        window.location.href = "/profile"; // Redirect to Profile page
+        localStorage.setItem("token", data.token); // Store token in localStorage
+        navigate("/"); // Redirect to Home page
       } else {
-        // Display error message
         alert(data.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      alert("An unexpected error occurred. Please try again.");
+      console.error("Login error:", error);
+      alert("An error occurred during login.");
     }
   };
 
