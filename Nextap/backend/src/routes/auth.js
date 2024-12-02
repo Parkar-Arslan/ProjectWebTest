@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // To generate unique NFC IDs
+const crypto = require("crypto"); // For generating unique IDs
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -69,7 +69,7 @@ router.get("/profile", async (req, res) => {
   }
 });
 
-// Update Profile
+// Update Profile Route
 router.put("/profile", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -83,7 +83,7 @@ router.put("/profile", async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       decoded.id,
       { name, email, phone, cardNo, accNo },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedUser) {
@@ -97,7 +97,7 @@ router.put("/profile", async (req, res) => {
   }
 });
 
-// Add NFC Card
+// Add Card Route
 router.post("/add-card", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -106,28 +106,31 @@ router.post("/add-card", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const { rawNfcData, pin } = req.body;
+    const { rawNfcData, nuId, pin } = req.body;
 
-    if (!rawNfcData || !pin) {
-      return res.status(400).json({ message: "Raw NFC data and PIN are required" });
+    if (!rawNfcData && !nuId) {
+      return res.status(400).json({ message: "Either NFC data or NU ID is required" });
     }
 
-    // Generate a unique NFC ID from the raw NFC data
-    const nfcId = crypto.createHash("sha256").update(rawNfcData).digest("hex");
+    if (!pin) {
+      return res.status(400).json({ message: "PIN is required" });
+    }
+
+    const nfcOrNuId = rawNfcData
+      ? crypto.createHash("sha256").update(rawNfcData).digest("hex")
+      : crypto.createHash("sha256").update(nuId).digest("hex");
 
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the NFC card is already added
-    const existingCard = user.cards.find(card => card.nfcId === nfcId);
+    const existingCard = user.cards.find(card => card.nfcId === nfcOrNuId);
     if (existingCard) {
-      return res.status(400).json({ message: "NFC card is already added" });
+      return res.status(400).json({ message: "Card or NU ID is already added" });
     }
 
-    // Add card details to the user's data
-    user.cards.push({ nfcId, pin });
+    user.cards.push({ nfcId: nfcOrNuId, pin });
     await user.save();
 
     res.status(200).json({ message: "Card added successfully", cards: user.cards });
