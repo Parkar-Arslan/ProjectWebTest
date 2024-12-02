@@ -1,25 +1,38 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import "../styles/NavBar.css";
 
 interface User {
-  name: string;
+  name: string; // Define the structure of `user`
 }
 
 interface NavBarProps {
-  user: User; // `user` is required
-  onLogout: () => void; // `onLogout` is required
+  user?: User; // Optional user object
+  onLogout?: () => void; // Optional logout handler
+  title: string; // Required title prop
+  loginLabel: string; // Required login label
 }
 
-const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
+const NavBar: React.FC<NavBarProps> = ({ user, onLogout, title, loginLabel }) => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
+  // Open the menu
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
   };
 
+  // Close the menu
   const handleMenuClose = () => {
     setMenuAnchor(null);
   };
@@ -27,15 +40,23 @@ const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
   return (
     <AppBar position="static" className="navbar">
       <Toolbar>
+        {/* Left Section: App Title */}
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           <Link to="/" className="nav-link">
-            Nextap
+            {title}
           </Link>
         </Typography>
+
+        {/* Right Section */}
         <Box>
-          <Typography variant="body1" style={{ marginRight: "16px" }}>
-            Hello, {user.name}
-          </Typography>
+          {user && (
+            <Typography
+              variant="body1"
+              style={{ marginRight: "16px", display: "inline-block" }}
+            >
+              Hello, {user.name}
+            </Typography>
+          )}
           <IconButton
             color="inherit"
             aria-controls="nav-menu"
@@ -47,6 +68,7 @@ const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
           <Menu
             id="nav-menu"
             anchorEl={menuAnchor}
+            keepMounted
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
@@ -81,14 +103,16 @@ const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
               </Link>
             </MenuItem>
           </Menu>
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={onLogout}
-            style={{ marginLeft: "16px" }}
-          >
-            Logout
-          </Button>
+          {user && (
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={onLogout}
+              style={{ marginLeft: "16px" }}
+            >
+              {loginLabel}
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

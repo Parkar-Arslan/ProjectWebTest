@@ -14,24 +14,28 @@ interface User {
 }
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null); // Specify `user` type
+  const [user, setUser] = useState<User | null>(null); // User state
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setUser(null);
+    setUser(null); // Clear user state on logout
   };
 
   return (
     <Router>
-      {user && <NavBar user={user} onLogout={handleLogout} />}
+      {/* Show NavBar only if the user is logged in */}
+      {user && <NavBar user={user} onLogout={handleLogout} title="Nextap" loginLabel="Logout" />}
       <Routes>
-        <Route
-          path="/"
-          element={user ? <Home /> : <Navigate to="/login" />}
-        />
+        {/* Public Route: Login */}
         <Route
           path="/login"
           element={<Login setUser={setUser} />}
+        />
+
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={user ? <Home /> : <Navigate to="/login" />}
         />
         <Route
           path="/profile"
