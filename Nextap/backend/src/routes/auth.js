@@ -68,7 +68,7 @@ router.get("/profile", async (req, res) => {
   }
 });
 
-// Update Profile Route
+// Update Profile
 router.put("/profile", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -92,6 +92,38 @@ router.put("/profile", async (req, res) => {
     res.json(updatedUser);
   } catch (err) {
     console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Add NFC Card
+router.post("/add-card", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { nfcId, pin } = req.body;
+
+    if (!nfcId || !pin) {
+      return res.status(400).json({ message: "NFC ID and PIN are required" });
+    }
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add card details to the user's data
+    user.cards = user.cards || [];
+    user.cards.push({ nfcId, pin });
+    await user.save();
+
+    res.status(200).json({ message: "Card added successfully", cards: user.cards });
+  } catch (err) {
+    console.error("Error adding card:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
