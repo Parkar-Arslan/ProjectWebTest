@@ -1,13 +1,10 @@
 import React from "react";
-import NavBar from "../components/NavBar";
 import { Grid, Typography, Button } from "@mui/material";
 import "../styles/Home.css";
 
 const Home: React.FC = () => {
   return (
     <div className="home-container">
-      <NavBar title="Nextap" loginLabel="Login" />
-
       <Grid container spacing={3} className="home-content">
         <Grid item xs={12} className="welcome-text">
           <Typography variant="h3" className="welcome-header">

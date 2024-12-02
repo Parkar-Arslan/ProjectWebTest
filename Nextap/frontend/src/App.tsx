@@ -1,5 +1,4 @@
-import React from "react";
-import "./styles/global.css"; // Adjust the path to your global styles
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/home";
 import Profile from "./pages/Profile";
@@ -8,24 +7,48 @@ import Statements from "./pages/Statements";
 import Balance from "./pages/Balance";
 import AddCard from "./pages/AddCard";
 import Login from "./pages/Login";
+import NavBar from "./components/NavBar";
 
 const App: React.FC = () => {
-  // Check if the user is logged in (using localStorage for simplicity)
-  const isLoggedIn = !!localStorage.getItem("token"); // Returns true if the token exists
+  const [user, setUser] = useState<any>(null); // User state
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
 
   return (
     <Router>
+      {user && <NavBar user={user} onLogout={handleLogout} />}
       <Routes>
-        {/* Protected Route: Redirect to login if not logged in */}
-        <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/send-receive" element={isLoggedIn ? <SendReceive /> : <Navigate to="/login" />} />
-        <Route path="/statements" element={isLoggedIn ? <Statements /> : <Navigate to="/login" />} />
-        <Route path="/balance" element={isLoggedIn ? <Balance /> : <Navigate to="/login" />} />
-        <Route path="/add-card" element={isLoggedIn ? <AddCard /> : <Navigate to="/login" />} />
-
-        {/* Login Route */}
-        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
+        <Route
+          path="/"
+          element={user ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/login"
+          element={<Login setUser={setUser} />}
+        />
+        <Route
+          path="/profile"
+          element={user ? <Profile onLogout={handleLogout} user={user} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/send-receive"
+          element={user ? <SendReceive /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/statements"
+          element={user ? <Statements /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/balance"
+          element={user ? <Balance /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/add-card"
+          element={user ? <AddCard /> : <Navigate to="/login" />}
+        />
       </Routes>
     </Router>
   );

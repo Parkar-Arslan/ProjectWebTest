@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Grid, TextField, Button, Typography } from "@mui/material";
 import "../styles/Login.css";
 
-const Login: React.FC = () => {
+interface LoginProps {
+  setUser: (user: any) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // React Router's navigation hook
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -18,8 +22,9 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem("token", data.token); // Store token in localStorage
-        navigate("/"); // Redirect to Home page
+        localStorage.setItem("token", data.token);
+        setUser(data.user); // Update the global user state
+        navigate("/");
       } else {
         alert(data.message || "Login failed. Please try again.");
       }

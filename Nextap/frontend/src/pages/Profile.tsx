@@ -10,7 +10,7 @@ const Profile: React.FC = () => {
       if (!token) return (window.location.href = "/login");
 
       try {
-        const response = await fetch("http://localhost:5000/api/auth/profile", {
+        const response = await fetch("http://localhost:3200/api/auth/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
