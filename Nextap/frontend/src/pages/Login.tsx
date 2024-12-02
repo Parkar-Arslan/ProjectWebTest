@@ -13,8 +13,8 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3200";
-
+    const apiUrl = process.env.REACT_APP_API_URL; // Now only uses the deployed backend
+    
     try {
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
