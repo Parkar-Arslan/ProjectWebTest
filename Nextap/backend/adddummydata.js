@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 // MongoDB Connection URI
 const MONGO_URI = "mongodb+srv://parkarar:jB44lCrZK5WAr5Wh@profile.u3s1j.mongodb.net/?retryWrites=true&w=majority&appName=profile";
 
-// User Schema
-const UserSchema = new mongoose.Schema({
+// Profile Schema
+const ProfileSchema = new mongoose.Schema({
   email: String,
   password: String,
   name: String,
@@ -14,31 +14,31 @@ const UserSchema = new mongoose.Schema({
   accNo: String,
 });
 
-const User = mongoose.model("User", UserSchema);
+const Profile = mongoose.model("Profile", ProfileSchema);
 
-const addDummyUser = async () => {
+const addDummyData = async () => {
   try {
     await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("MongoDB connected!");
 
-    const hashedPassword = await bcrypt.hash("123", 10);
+    const hashedPassword = await bcrypt.hash("password123", 10);
 
-    const dummyUser = new User({
+    const dummyData = new Profile({
       email: "p@admin.com",
       password: hashedPassword,
       name: "Arslan P",
-      phone: "+876887567",
-      cardNo: "2234 5278 9012",
-      accNo: "0001233456799",
+      phone: "+876097567",
+      cardNo: "2234 5678 9012",
+      accNo: "000123456799",
     });
 
-    await dummyUser.save();
-    console.log("Dummy user inserted into 'users' collection!");
+    await dummyData.save();
+    console.log("Dummy data inserted!");
   } catch (err) {
-    console.error("Error inserting user:", err.message);
+    console.error("Error inserting data:", err.message);
   } finally {
     mongoose.connection.close();
   }
 };
 
-addDummyUser();
+addDummyData();

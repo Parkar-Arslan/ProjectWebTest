@@ -8,12 +8,6 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String },
   cardNo: { type: String },
   accNo: { type: String },
-  cards: [
-    {
-      nfcId: { type: String, required: true },
-      pin: { type: String, required: true },
-    },
-  ], // Array to store NFC card details
 });
 
 // Hash password before saving
