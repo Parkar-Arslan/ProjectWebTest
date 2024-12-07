@@ -1,0 +1,33 @@
+.add-card-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #121212;
+  padding: 16px;
+}
+
+.add-card-content {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.header-text {
+  color: #4caf50; /* Bright green */
+  margin-bottom: 16px;
+}
+
+.input-field {
+  margin-bottom: 16px;
+  color: #ffffff !important; /* White input text */
+}
+
+.action-buttons {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.add-card-button {
+  background-color: #4caf50 !important;
+  text-transform: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+}
