@@ -1,3 +1,0 @@
-MONGO_URI= mongodb+srv://parkarar:jB44lCrZK5WAr5Wh@profile.u3s1j.mongodb.net/?retryWrites=true&w=majority&appName=profile
-JWT_SECRET=your_secret_key
-PORT=3200
